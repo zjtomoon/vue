@@ -57,27 +57,19 @@
         isMenu: true, // 是否是菜单显示
         fileData: [
           {
-            img: 'PPt',
-            fileName: '中学语文教学法',
-            fileSize: '215KB',
-            date: '2016-05-18 18:53',
-            checked: false,
-            id: '1'
-          },
-          {
             img: 'Code',
             date: '2016-05-18 18:53',
             fileSize: '423M',
             fileName: 'Code的压件锦集',
             checked: false,
-            id: '2'
+            id: '1'
           },
           {
             img: 'ZIP',
             fileSize: '3G',
             date: '2016-05-18 18:53',
             fileName: '超大的压缩文件锦集',
-            id: '3',
+            id: '2',
             checked: false
           }
         ],

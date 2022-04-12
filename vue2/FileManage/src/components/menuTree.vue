@@ -44,19 +44,10 @@
             icon: 'el-icon-document-copy'
           },
           {
-            label: '程四姐视频剪辑',
-            path: '/home',
-            id: '2'
-          },
-          {
             label: '文件夹',
             path: '/file',
-            id: '3'
-          },
-          {
-            label: '孙敏校全集',
-            path: '/home',
-            id: '4'
+            id: '2',
+            icon: 'el-icon-document-copy'
           },
         ]
       }
