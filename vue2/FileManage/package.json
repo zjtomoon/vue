@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "tauri": "tauri",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.0.0-rc.3",
     "@xunlei/vue-context-menu": "^1.0.2",
     "core-js": "^3.3.2",
     "element-ui": "^2.12.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.0.0-rc.8",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^4.0.0",
     "@vue/cli-service": "^4.0.0",
