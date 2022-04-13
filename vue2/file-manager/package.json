@@ -1,0 +1,44 @@
+{
+    "name": "file-manager",
+    "version": "3.0.1",
+    "description": "File manager",
+    "keywords": [
+        "file",
+        "manager"
+    ],
+    "author": "alex",
+    "private": false,
+    "license": "MIT",
+    "main": "src/init.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "tauri": "tauri"
+    },
+    "dependencies": {
+        "@tauri-apps/api": "^1.0.0-rc.3",
+        "axios": "^0.25.0",
+        "codemirror": "^5.65.1",
+        "codemirror-editor-vue3": "^1.0.1",
+        "cropperjs": "^1.5.12",
+        "mitt": "^3.0.0",
+        "plyr": "^3.6.12",
+        "vue": "^3.2.25",
+        "vuex": "^4.0.2"
+    },
+    "devDependencies": {
+        "@tauri-apps/cli": "^1.0.0-rc.8",
+        "@vitejs/plugin-vue": "^2.0.0",
+        "eslint": "^8.8.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-vue": "^8.4.0",
+        "prettier": "^2.5.1",
+        "sass": "^1.49.7",
+        "vite": "^2.7.2",
+        "vite-plugin-environment": "^1.1.0"
+    }
+}
