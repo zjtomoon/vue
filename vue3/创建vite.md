@@ -1,18 +1,18 @@
-+ °²×°ÃüÁîĞĞ¹¤¾ß
++ å®‰è£…å‘½ä»¤è¡Œå·¥å…·
 
 ```bash
 yarn global add @vue/cli
-# »ò
+# æˆ–
 npm install -g @vue/cli
 ```
 
-+ ¹¹½¨¹¤¾ßvite
++ æ„å»ºå·¥å…·vite
 
 ```bash
 # npm 6.x
 $ npm init vite@latest <project-name> --template vue
 
-# npm 7+£¬ĞèÒª¼ÓÉÏ¶îÍâµÄË«¶ÌºáÏß
+# npm 7+ï¼Œéœ€è¦åŠ ä¸Šé¢å¤–çš„åŒçŸ­æ¨ªçº¿
 $ npm init vite@latest <project-name> -- --template vue
 
 $ cd <project-name>
