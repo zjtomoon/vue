@@ -1,9 +1,11 @@
 <template>
-    <div>
+    <div class="container">
         <div>
             已完成{{isComplete}}/全部{{all}}
         </div>
-        <button v-if="isComplete > 0">清楚已完成</button>
+        <div v-if="isComplete > 0" class="btn">
+            <button @click="clear">清楚已完成</button>
+        </div>
     </div>
 </template>
 
@@ -16,9 +18,14 @@
         setup() {
             let isComplete = ref(1)
             let all = ref(3)
+            // 清除已完成
+            let clear = () => {
+
+            }
             return {
                 isComplete,
-                all
+                all,
+                clear
             }
         },
     })
