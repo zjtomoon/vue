@@ -1,18 +1,22 @@
 <template>
     <div>
-        header
+        <input placeholder="请输入任务名称" v-model="value"/>
     </div>
 </template>
 
 
 <script>
-import { defineComponent } from 'vue'
+    import {defineComponent, ref} from 'vue'
 
-export default defineComponent({
-    setup() {
-        
-    },
-})
+    export default defineComponent({
+        name: 'NavHeader',
+        setup() {
+            let value = ref('')
+            return {
+                value
+            }
+        },
+    })
 </script>
 
 
