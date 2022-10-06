@@ -14,8 +14,8 @@ export default createStore({
             },
             {
                 title:'写代码',
-                complete:true,
-            }
+                complete:false,
+            },
         ]
     },
     // 同步修改state,都是方法，不能处理异步操作

@@ -12,10 +12,13 @@
 
     export default defineComponent({
         name: 'NavHeader',
-        setup() {
+        setup(props,ctx) {
             let value = ref('')
             let enter = () => {
                 // 按回车确认
+                // 把输入框的内容传递给父组件
+                ctx.emit('add',value.value)
+                value.value = ''
                 // console.log(value.value)
             }
             return {
