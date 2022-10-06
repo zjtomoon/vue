@@ -1,5 +1,5 @@
 import {createRouter,createWebHashHistory} from 'vue-router'
-import Home from '@/components/Home'
+import Home from '@/views/Home'
 
 // 路由的配置数组
 const routes = [

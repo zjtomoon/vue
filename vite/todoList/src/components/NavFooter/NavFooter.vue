@@ -4,7 +4,7 @@
             已完成{{isComplete}}/全部{{all}}
         </div>
         <div v-if="isComplete > 0" class="btn">
-            <button @click="clear">清楚已完成</button>
+            <button @click="clear">清除已完成</button>
         </div>
     </div>
 </template>
