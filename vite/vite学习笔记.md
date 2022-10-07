@@ -3,24 +3,24 @@
 ## 创建vite项目
 
 ```bash
-#简单做个笔记：	
+#简单做个笔记：    
 #1、使用vite-app创建项目
-	npm create vite-app app_name
-	#或
-	yarn create vite-app app_name
+    npm create vite-app app_name
+    #或
+    yarn create vite-app app_name
 
 #2、安装依赖
-	npm install
-	#或
-	yarn
+    npm install
+    #或
+    yarn
 
 # 3、运行
-	npm run dev
-	#或
-	yarn dev
-	
-	
-	
+    npm run dev
+    #或
+    yarn dev
+
+
+
 # npm 6.x
 npm create vite@latest my-vue-app --template vue
 
@@ -32,10 +32,7 @@ yarn create vite my-vue-app --template vue
 
 # pnpm
 pnpm create vite my-vue-app --template vue
-
 ```
-
-
 
 ## 创建react项目
 
@@ -44,10 +41,4 @@ mkdir react-vite
 npm create vite@latest react-vite --template react
 ```
 
-## 创建angular项目
-
-```bash
-mkdir angular-vite
-npm create vite@latest react-vite --template react
-```
 
