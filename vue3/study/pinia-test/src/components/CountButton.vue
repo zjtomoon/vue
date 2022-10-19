@@ -19,6 +19,18 @@
             修改数据(actions)
         </button>
     </div>
+
+    <div>
+        <button @click="handleClickChangePhone">
+            改变电话号码
+        </button>
+    </div>
+
+    <div>
+        <button @click="getList">
+            显示List
+        </button>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -49,6 +61,15 @@
 
     const handleClickActions = () => {
         store.changeState()
+    }
+
+    // 调用该方法后，phoneHidden方法也随着调用了一次
+    const handleClickChangePhone = () => {
+        store.phone = "15139333999"
+    }
+
+    const getList = () => {
+        store.getList();
     }
 </script>
 
