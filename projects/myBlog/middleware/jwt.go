@@ -3,38 +3,36 @@ package middleware
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	jwtmiddleware "github.com/iris-contrib/middleware/jwt"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"github.com/spf13/cast"
-	"log"
 	"myBlog/models"
 	"time"
 )
 
 const JwtKey = "go go go"
 
-func GetJWT() *jwtmiddleware.Middleware {
-	jwtHandler := jwtmiddleware.New(jwtmiddleware.Config{
-		// 这个方法将验证jwt的token
-		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			// 自己加密的密钥或者说盐值
-			return []byte(JwtKey), nil
-		},
-		// 加密方式
-		SigningMethod: jwt.SigningMethodHS256,
-		// 验证未通过错误处理方式
-		ErrorHandler: func(ctx iris.Context, s string) {
-
-			fmt.Println("错误：", s)
-			result := models.Result{Code: -1, Msg: "认证失败，请重新登录"}
-			i, err := ctx.JSON(result)
-			if err != nil {
-				log.Println(i, err)
-			}
-		},
-	})
-	return jwtHandler
-}
+//func GetJWT() *jwtmiddleware.Middleware {
+//	jwtHandler := jwtmiddleware.New(jwtmiddleware.Config{
+//		// 这个方法将验证jwt的token
+//		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+//			// 自己加密的密钥或者说盐值
+//			return []byte(JwtKey), nil
+//		},
+//		// 加密方式
+//		SigningMethod: jwt.SigningMethodHS256,
+//		// 验证未通过错误处理方式
+//		ErrorHandler: func(ctx iris.Context, s string) {
+//
+//			fmt.Println("错误：", s)
+//			result := models.Result{Code: -1, Msg: "认证失败，请重新登录"}
+//			i, err := ctx.JSON(result)
+//			if err != nil {
+//				log.Println(i, err)
+//			}
+//		},
+//	})
+//	return jwtHandler
+//}
 
 // 生成token
 func GenerateToken(user models.User) string {
