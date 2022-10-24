@@ -71,7 +71,7 @@ func (g *ArticleController) PostSave() (result models.Result) {
 		result.Msg = "请输入文章标题"
 		return
 	}
-	if m["Personl"] == "" || m["Personal"] == nil {
+	if m["Personal"] == "" || m["Personal"] == nil {
 		result.Code = -1
 		result.Msg = "请选择文章类型"
 		return
