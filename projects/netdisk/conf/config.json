@@ -1,0 +1,9 @@
+{
+    "WebAddr":"127.0.0.1:9987",
+    "WebIndex":"../../dist",
+    "FilePath":"cloud",
+    "StaticFS":true,
+    "FileDiskTotal":50,
+    "Username":"alex",
+    "Password":"123456"
+}
