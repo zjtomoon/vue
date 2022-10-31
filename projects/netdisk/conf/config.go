@@ -2,13 +2,14 @@ package conf
 
 import (
 	"encoding/json"
+	"netdisk/service"
 	"os"
 )
 
 type Config struct {
 	WebAddr         string `json:"WebAddr"`
 	WebIndex        string `json:"WebIndex"`
-	StaticFS        string `json:"StaticFS"`
+	StaticFS        bool   `json:"StaticFS"`
 	FilePath        string `json:"FilePath"`
 	FileDiskTotal   uint64 `json:"FileDiskTotal"`
 	SaveFileMultipe bool   `json:"SaveFileMultipe"`
@@ -16,15 +17,17 @@ type Config struct {
 	Password        string `json:"Password"`
 }
 
-var config *Config
+var Configuration *Config
 
 func LoadConfig(path string) *Config {
-	file,_ := os.Open(path)
+	file, _ := os.Open(path)
 	decoder := json.NewDecoder(file)
 	conf := &Config{}
 	err := decoder.Decode(&conf)
 	if err != nil {
 		panic(err)
 	}
-	return conf
+	Configuration = conf
+	service.Logger.Info(Configuration)
+	return Configuration
 }

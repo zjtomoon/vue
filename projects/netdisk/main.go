@@ -1,11 +1,9 @@
 package main
 
-import (
-	_ "netdisk/routers"
-	"github.com/astaxie/beego"
-)
+//var address *tests.Address
 
 func main() {
-	beego.Run()
+	//address = tests.SetAddress("127.0.0.1","8080")
+	//fmt.Println(address.IP)
+	//fmt.Println(address.Port)
 }
-

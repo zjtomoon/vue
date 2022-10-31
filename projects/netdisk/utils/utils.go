@@ -13,10 +13,10 @@ import (
 	"time"
 )
 
-const timeFormat = "2006-01-02 15:04:05"
+const TimeFormat = "2006-01-02 15:04:05"
 
-func nowFormat() string {
-	return time.Now().Format(timeFormat)
+func NowFormat() string {
+	return time.Now().Format(TimeFormat)
 }
 
 // generate token
@@ -30,12 +30,12 @@ func GenToken(l int) string {
 	return tkn.String()
 }
 
-func makeFilePart(name, part string) string {
+func MakeFilePart(name, part string) string {
 	return fmt.Sprintf("%s.part%s", name, part)
 }
 
 // 文件md5值
-func fileMD5(filename string) (string, error) {
+func FileMD5(filename string) (string, error) {
 	if info, err := os.Stat(filename); err != nil {
 		return "", err
 	} else if info.IsDir() {
@@ -108,26 +108,26 @@ func BytesToTB(b uint64) float64 {
 	return float64(b) / float64(TB)
 }
 
-func ConvertBytes(b uint64) (float64,string) {
-	switch  {
+func ConvertBytes(b uint64) (float64, string) {
+	switch {
 	case b < KB:
-		return float64(b),"B"
+		return float64(b), "B"
 	case b < MB:
-		return BytesToKB(b),"KB"
+		return BytesToKB(b), "KB"
 	case b < GB:
-		return BytesToMB(b),"MB"
+		return BytesToMB(b), "MB"
 	case b < TB:
-		return BytesToGB(b),"GB"
+		return BytesToGB(b), "GB"
 	default:
-		return BytesToTB(b),"TB"
+		return BytesToTB(b), "TB"
 	}
 }
 
 func ConvertBytesString(b uint64) string {
-	cf,s := ConvertBytes(b)
-	return fmt.Sprintf("%.1f%s",cf,s)
+	cf, s := ConvertBytes(b)
+	return fmt.Sprintf("%.1f%s", cf, s)
 }
 
-func init()  {
+func init() {
 	rand.Seed(time.Now().Unix())
 }
