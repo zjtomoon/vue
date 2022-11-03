@@ -1,4 +1,4 @@
-package route
+package service
 
 import (
 	"fmt"
@@ -7,10 +7,8 @@ import (
 	"github.com/yddeng/utils/log"
 	"github.com/yddeng/utils/task"
 	"net/http"
-	"netdisk/api"
-	"netdisk/conf"
-	"netdisk/service"
 	"netdisk/utils"
+	"path"
 	"reflect"
 	"strings"
 	"sync"
@@ -24,10 +22,10 @@ var (
 
 func Launch() {
 	taskQueue = task.NewTaskPool(1, 1024)
-	service.SaveFileMultiple = conf.Configuration.SaveFileMultipe
-	service.FileDiskTotal = conf.Configuration.FileDiskTotal * utils.MB
+	SaveFileMultiple = Configuration.SaveFileMultipe
+	FileDiskTotal = Configuration.FileDiskTotal * utils.MB
 
-	service.LoadFilePath(conf.Configuration.FilePath)
+	LoadFilePath(Configuration.FilePath)
 
 	app = gin.New()
 	app.Use(gin.Logger(), gin.Recovery())
@@ -47,24 +45,24 @@ func Launch() {
 		ctx.Next()
 	})
 
-	if conf.Configuration.StaticFS {
-		app.StaticFS("/static", gin.Dir(conf.Configuration.FilePath, true))
+	if Configuration.StaticFS {
+		app.StaticFS("/static", gin.Dir(Configuration.FilePath, true))
 	}
 
 	// 前端
-	if conf.Configuration.WebIndex != "" {
-		app.Use(static.Serve("/", static.LocalFile(conf.Configuration.WebIndex, false)))
+	if Configuration.WebIndex != "" {
+		app.Use(static.Serve("/", static.LocalFile(Configuration.WebIndex, false)))
 		app.NoRoute(func(ctx *gin.Context) {
-			ctx.File(conf.Configuration.WebIndex + "/index.html")
+			ctx.File(Configuration.WebIndex + "/index.html")
 		})
 	}
 
 	// todo: initHandler(app)
 	initHandler(app)
-	port := strings.Split(conf.Configuration.WebAddr, ":")[1]
+	port := strings.Split(Configuration.WebAddr, ":")[1]
 	webAddr := fmt.Sprintf("0.0.0.0:%s", port)
 
-	service.Logger.Infof("start web service on %s", conf.Configuration.WebAddr)
+	Logger.Infof("start web service on %s", Configuration.WebAddr)
 
 	if err := app.Run(webAddr); err != nil {
 		log.Error(err)
@@ -140,7 +138,7 @@ func transBegin(ctx *gin.Context, fn interface{}, args ...reflect.Value) {
 	if typ.NumIn() != len(args)+1 {
 		panic("func argument error")
 	}
-	route := getCurrentRoute(ctx)
+	route := GetCurrentRoute(ctx)
 	wait := newWaitConn(ctx, route)
 	if err := taskQueue.SubmitTask(webTask(func() {
 		ok := checkToken(ctx, route)
@@ -158,7 +156,7 @@ func transBegin(ctx *gin.Context, fn interface{}, args ...reflect.Value) {
 	ctx.JSON(wait.code, wait.result)
 }
 
-func getCurrentRoute(ctx *gin.Context) string {
+func GetCurrentRoute(ctx *gin.Context) string {
 	return ctx.FullPath()
 }
 
@@ -232,19 +230,84 @@ func checkToken(ctx *gin.Context, route string) bool {
 	if tkn == "" {
 		return false
 	}
-	if api.AccessTokenExpire.IsZero() || time.Now().After(api.AccessTokenExpire) {
-		api.AccessToken = ""
-		api.AccessTokenExpire = time.Time{}
+	if AccessTokenExpire.IsZero() || time.Now().After(AccessTokenExpire) {
+		AccessToken = ""
+		AccessTokenExpire = time.Time{}
 		return false
 	}
 
-	return tkn == api.AccessToken
+	return tkn == AccessToken
 }
 
 func initHandler(app *gin.Engine) {
-	authHandle := new(api.AuthHandler)
+	authHandle := new(AuthHandler)
 	authGroup := app.Group("/auth")
 	authGroup.POST("/login", WrapHandle(authHandle.Login))
 
 	// todo: fileHandle
+	fileHandle := new(FileHandler)
+	fileGroup := app.Group("/file")
+	fileGroup.POST("/mkdir", WrapHandle(fileHandle.Mkdir))
+	fileGroup.POST("/list", WrapHandle(fileHandle.List))
+	fileGroup.POST("/remove", WrapHandle(fileHandle.Remove))
+	fileGroup.POST("/rename", WrapHandle(fileHandle.Rename))
+	fileGroup.POST("/mvcp", WrapHandle(fileHandle.Mvcp))
+	fileGroup.POST("/download", func(ctx *gin.Context) {
+		var req *DownloadArg
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"message": "Json unmarshal failed",
+				"error":   err.Error(),
+			})
+			return
+		}
+		Download(ctx, req)
+	})
+	// todo: uploadHandle
+	uploadHandle := new(UploadHandler)
+	uploadGroup := app.Group("/upload")
+	uploadGroup.POST("/check", WrapHandle(uploadHandle.Check))
+	uploadGroup.POST("/upload", WrapHandle(uploadHandle.Upload))
+
+	// todo: shareHandle
+	shareHandle := new(ShareHandler)
+	shareGroup := app.Group("/shared")
+	shareGroup.POST("/create", WrapHandle(shareHandle.Create))
+	shareGroup.POST("/cancel", WrapHandle(shareHandle.Cancel))
+	shareGroup.POST("/list", WrapHandle(shareHandle.List))
+	shareGroup.POST("/info", WrapHandle(shareHandle.Info))
+	shareGroup.POST("/path", WrapHandle(shareHandle.Path))
+	shareGroup.POST("/download", func(ctx *gin.Context) {
+		var req *ShareDownloadArg
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"message": "Json unmarshal failed",
+				"error":   err.Error(),
+			})
+			return
+		}
+		shared, err := shareHandle.CheckShared(req.Key, req.SharedToken)
+		if err != nil {
+			ctx.Status(http.StatusBadRequest)
+			return
+		}
+		if req.Path != shared.Path {
+			children := false
+			for _, name := range shared.Filename {
+				if strings.Contains(req.Path, path.Join(shared.Path, name)) {
+					children = true
+					break
+				}
+			}
+			if !children {
+				ctx.Status(http.StatusBadRequest)
+				return
+			}
+		}
+
+		Download(ctx, &DownloadArg{
+			Path:     req.Path,
+			Filename: req.Filename,
+		})
+	})
 }

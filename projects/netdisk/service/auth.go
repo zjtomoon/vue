@@ -1,9 +1,6 @@
-package api
+package service
 
 import (
-	"netdisk/conf"
-	"netdisk/route"
-	"netdisk/service"
 	"netdisk/utils"
 	"time"
 )
@@ -15,16 +12,16 @@ var (
 	AccessTokenExpire time.Time
 )
 
-func (*AuthHandler) Login(wait *route.WaitConn, req struct {
+func (*AuthHandler) Login(wait *WaitConn, req struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }) {
-	service.Logger.Infof("%s %v", wait.GetRoute(), req)
+	Logger.Infof("%s %v", wait.GetRoute(), req)
 	defer func() {
 		wait.Done()
 	}()
 
-	if req.Username != conf.Configuration.Username || req.Password != conf.Configuration.Password {
+	if req.Username != Configuration.Username || req.Password != Configuration.Password {
 		wait.SetResult("用户或密码错误", nil)
 		return
 	}

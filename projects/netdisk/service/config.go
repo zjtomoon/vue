@@ -1,8 +1,7 @@
-package conf
+package service
 
 import (
 	"encoding/json"
-	"netdisk/service"
 	"os"
 )
 
@@ -28,6 +27,6 @@ func LoadConfig(path string) *Config {
 		panic(err)
 	}
 	Configuration = conf
-	service.Logger.Info(Configuration)
+	Logger.Info(Configuration)
 	return Configuration
 }

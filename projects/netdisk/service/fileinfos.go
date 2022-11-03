@@ -39,10 +39,10 @@ type fileInfo struct {
 	FileSize   uint64               `json:"fileSize"`  // 文件有值。有值表示存在文件，无值说明正在上传
 	FileMD5    string               `json:"fileMD5"`   // 文件有值。有值表示存在文件，无值说明正在上传
 	FileInfos  map[string]*fileInfo `json:"fileInfos"` // 文件夹有值
-	FileUpload *upload              `json:"_"`         //文件上传零时数据
+	FileUpload *Upload              `json:"_"`         //文件上传零时数据
 }
 
-type upload struct {
+type Upload struct {
 	Md5        string           `json:"md5"`        // 文件上传时的md5值
 	Size       uint64           `json:"size"`       // 文件总大小
 	SliceSize  uint64           `json:"sliceSize"`  // 上传的分片大小
@@ -51,7 +51,7 @@ type upload struct {
 	Token      string           `json:"token"`      // 上传时需要验证token
 }
 
-func (this *fileInfo) makeChild(name string, isDir bool) (*fileInfo, error) {
+func (this *fileInfo) MakeChild(name string, isDir bool) (*fileInfo, error) {
 	info := &fileInfo{
 		Path:     path.Join(this.Path, this.Name),
 		Name:     name,
@@ -83,7 +83,7 @@ func (this *fileInfo) FindDir(filePath string, mkdir bool) (*fileInfo, error) {
 		} else {
 			if mkdir {
 				var err error
-				if cInfo, err = info.makeChild(dirName, true); err != nil {
+				if cInfo, err = info.MakeChild(dirName, true); err != nil {
 					return nil, err
 				}
 				info.FileInfos[cInfo.Name] = cInfo
@@ -105,7 +105,7 @@ func (this *fileInfo) clearUpload() {
 	}
 }
 
-func (this *fileInfo) mergeUpload() {
+func (this *fileInfo) MergeUpload() {
 	if this.FileUpload == nil || this.FileUpload.Total != len(this.FileUpload.ExistSlice) {
 		return
 	}
@@ -140,12 +140,12 @@ func (this *fileInfo) mergeUpload() {
 	this.ModeTime = utils.NowFormat()
 	this.FileUpload = nil
 
-	addMD5File(this.FileMD5, this)
+	AddMD5File(this.FileMD5, this)
 	// todo: calUsedDisk()
-	calUsedDisk()
+	CalUsedDisk()
 }
 
-func calUsedDisk() {
+func CalUsedDisk() {
 	used := uint64(0)
 	// todo: walk()
 	walk(FilePtr.FileInfo, func(file *fileInfo) error {
@@ -157,7 +157,7 @@ func calUsedDisk() {
 	FilePtr.UsedDisk = used
 }
 
-func addMD5File(md5 string, info *fileInfo) {
+func AddMD5File(md5 string, info *fileInfo) {
 	files, ok := FilePtr.MD5Files[md5]
 	if !ok {
 		files = &md5File{
@@ -192,7 +192,7 @@ func removeMD5File(md5, ptr string) {
 }
 
 // 文件删除
-func remove(parent *fileInfo, name string) error {
+func Remove(parent *fileInfo, name string) error {
 	info, ok := parent.FileInfos[name]
 	if !ok {
 		return fmt.Errorf("%s 文件不存在", name)
@@ -240,7 +240,7 @@ func remove(parent *fileInfo, name string) error {
 	return nil
 }
 
-func copy2src(src, destParent *fileInfo, destName string) error {
+func Copy2src(src, destParent *fileInfo, destName string) error {
 	srcPath := path.Join(src.Path, src.Name)
 	return walk(src, func(file *fileInfo) error {
 		var fileName string
@@ -264,11 +264,11 @@ func copy2src(src, destParent *fileInfo, destName string) error {
 			}
 			fileName = file.Name
 
-			if dirInfo, err = destParent.findDir(revPath, true); err != nil {
+			if dirInfo, err = destParent.FindDir(revPath, true); err != nil {
 				return err
 			}
 		}
-		if newInfo, err = dirInfo.makeChild(fileName, file.IsDir); err != nil {
+		if newInfo, err = dirInfo.MakeChild(fileName, file.IsDir); err != nil {
 			return err
 		}
 
@@ -283,7 +283,7 @@ func copy2src(src, destParent *fileInfo, destName string) error {
 
 			newInfo.FileSize = file.FileSize
 			newInfo.FileMD5 = file.FileMD5
-			addMD5File(newInfo.FileMD5, newInfo)
+			AddMD5File(newInfo.FileMD5, newInfo)
 		}
 		dirInfo.FileInfos[newInfo.Name] = newInfo
 		return nil
@@ -343,22 +343,22 @@ func LoadFilePath(filePath string) {
 					return e
 				}
 				dir, file := path.Split(relativePath)
-				dirInfo, _ := FilePtr.FileInfo.findDir(dir, true)
-				if fileInfo, err := dirInfo.makeChild(file, false); err != nil {
+				dirInfo, _ := FilePtr.FileInfo.FindDir(dir, true)
+				if fileInfo, err := dirInfo.MakeChild(file, false); err != nil {
 					return err
 				} else {
 					fileInfo.FileSize = uint64(f.Size())
 					fileInfo.FileMD5 = md5
 					fileInfo.ModeTime = f.ModTime().Format(utils.TimeFormat)
 					dirInfo.FileInfos[file] = fileInfo
-					addMD5File(md5, fileInfo)
+					AddMD5File(md5, fileInfo)
 				}
 			}
 		} else {
-			dirInfo, _ := FilePtr.FileInfo.findDir(relativePath, true)
+			dirInfo, _ := FilePtr.FileInfo.FindDir(relativePath, true)
 			dirInfo.ModeTime = f.ModTime().Format(utils.TimeFormat)
 		}
 		return nil
 	}))
-	calUsedDisk()
+	CalUsedDisk()
 }
