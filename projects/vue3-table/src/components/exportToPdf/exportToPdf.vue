@@ -24,6 +24,7 @@ export default {
     getOnePdf() {
       var title = "单页报告";
       var dom = document.getElementById("pdf-container");  // 生成pdf的html内容
+      console.log("dom:",dom)
       html2Canvas(dom, {
         allowTaint: true,
         scrollY: 0,

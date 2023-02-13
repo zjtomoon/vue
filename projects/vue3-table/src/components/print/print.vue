@@ -1,4 +1,5 @@
 <!--https://blog.csdn.net/Ling_a_Sir/article/details/121512452-->
+<!--https://juejin.cn/post/6888519415717953549-->
 <template>
   <div>
     <button class="notprint" @click="printOut(printDom)">
